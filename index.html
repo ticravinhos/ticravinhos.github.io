@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dispensação</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>.copy{font-size:0.5em; cursor:pointer; padding:5px; color: blue; border:1px solid black; border-radius:5px;} .copy:hover{color:black; border-color:blue; background-color: #ccc;} .copy:active{border:1px solid red; background-color:#fcc;}</style>
+</head>
+
+<body onload="inicializarDatas();">
+<div class="container mt-3">
+  <h1 class="text-center">Dispensação de Medicamentos</h1>
+
+<hr>
+  <h2>Data de Entrega</h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Data Inicial</label>
+        <input type="text" class="form-control data data_inicial bg-info">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Data Final</label>
+        <input type="text" class="form-control data data_final">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Diferença (dias)</label>
+        <input type="text" class="form-control diferenca" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-3 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control diferenca_30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-3 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control diferenca_60d" disabled readonly>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Data</label>
+        <input type="text" class="form-control data data_calcular bg-info">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Diferença (dias)</label>
+        <input type="number" class="form-control dias_calcular" value="0">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Sugerido</label>
+        <input type="text" class="form-control sugerido_calcular" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Calculado</label>
+        <input type="text" class="form-control diferenca_calcular" disabled readonly>
+      </div>
+    </div>
+  </form>
+<hr>
+
+<div>
+<h2>Cálculo de Gotas</h2>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxAcidoFolico" aria-expanded="false" aria-controls="boxAcidoFolico">
+    Ácido Fólico
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxClonazepam" aria-expanded="false" aria-controls="boxClonazepam">
+    Clonazepam
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxClorpromazina" aria-expanded="false" aria-controls="boxClorpromazina">
+    Clorpromazina
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxFenobarbital" aria-expanded="false" aria-controls="boxFenobarbital">
+    Fenobarbital
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxHaloperidol" aria-expanded="false" aria-controls="boxHaloperidol">
+    Haloperidol
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxLevomepromazina" aria-expanded="false" aria-controls="boxLevomepromazina">
+    Levomepromazina
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxPericiazina" aria-expanded="false" aria-controls="boxPericiazina">
+    Periciazina
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxSulfatoFerroso" aria-expanded="false" aria-controls="boxSulfatoFerroso">
+    Sulfato Ferroso
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxVitaminaD3" aria-expanded="false" aria-controls="boxVitaminaD3">
+    Vitamina D3 (Colecalciferol)
+  </button>
+</div>
+
+<br>
+
+<div class="container collapse" id="boxAcidoFolico">
+  <h2>Ácido Fólico <sup class="copy">241102-2</sup><input type="hidden" value="241102-2"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="600">Nesh</option>
+	  <option value="600" selected>Nutrisenior (Folic B9)</option>
+	  <option value="750">NTS (Natubras)</option>
+	  <option value="750">Soinvie</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label for="af_1frasco" class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxClonazepam">
+  <h2>Clonazepam 2,5mg/ml <sup class="copy">451664-3</sup><input type="hidden" value="451664-3"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="500" selected>Hipolabor</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxClorpromazina">
+  <h2>Clorpromazina 40mg/ml <sup class="copy">450011-9</sup><input type="hidden" value="450011-9"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="800" selected>Cristália (Longactil)</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxFenobarbital">
+  <h2>Fenobarbital 40mg/ml <sup class="copy">451055-6</sup><input type="hidden" value="451055-6"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="800">Cristália</option>
+          <option value="800" selected>União Química</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxHaloperidol">
+  <h2>Haloperidol 2mg/ml <sup class="copy">451083-1</sup><input type="hidden" value="451083-1"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="400" selected>União Química</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxLevomepromazina">
+  <h2>Levomepromazina 4% <sup class="copy">951063-5</sup><input type="hidden" value="951063-5"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="800" selected>Cristália (Levozine)</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxPericiazina">
+  <h2>Periciazina 1% <span><sup class="copy">451453-5</sup><input type="hidden" value="451453-5"></span> e 4% <span><sup class="copy">451452-7</sup><input type="hidden" value="451452-7"></span></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="800" selected>Sanofi (Neuleptil)</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxSulfatoFerroso">
+  <h2>Sulfato Ferroso <sup class="copy">451592-2</sup><input type="hidden" value="451592-2"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label for="sf_fabricante" class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="750">Belfar</option>
+	  <option value="600">Bunker</option>
+	  <option value="600">Luper</option>
+	  <option value="600">Natulab</option>
+	  <option value="750" selected>NTS (Natubras)</option>
+	  <option value="600">Neoquímica</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="container collapse" id="boxVitaminaD3">
+  <h2>Vitamina D3 (Colecalciferol) <span><sup class="copy">240361-1</sup><input type="hidden" value="240361-1"></span></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="500" selected>Nutriex (DMais)</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Gotas/Dia</label>
+        <input type="number" class="form-control gotas_dia">
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">30 Dias</label>
+        <input type="text" class="form-control 30d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">60 Dias</label>
+        <input type="text" class="form-control 60d" disabled readonly>
+      </div>
+      <div class="col col-6 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">1 Frasco</label>
+        <input type="text" class="form-control um_frasco" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
+<hr>
+
+<h2>Cartelas com 14 CP</h2>
+<table class="table table-bordered table-striped-columns text-center">
+<tbody>
+  <tr>
+    <th scope="row">Cartela</th>
+    <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td>
+    <td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td>
+  </tr>
+  <tr>
+    <th scope="row">CP</th>
+    <td>14</td><td>28</td><td>42</td><td>56</td><td>70</td><td>84</td><td>98</td><td>112</td><td>126</td><td>140</td>
+    <td>154</td><td>168</td><td>182</td><td>196</td><td>210</td><td>224</td><td>238</td><td>252</td><td>266</td><td>280</td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js" integrity="sha512-1/RvZTcCDEUjY/CypiMz+iqqtaoQfAITmNSJY17Myp4Ms5mdxPS5UV7iOfdZoxcGhzFbOm6sntTKJppjvuhg4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+
+<script>
+  const dia = 1000*60*60*24;
+
+  $( function() {
+    $( ".data" ).datepicker({
+      dateFormat: 'dd/mm/yy',
+      dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+      dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+      dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+      monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+      monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+      nextText: 'Próximo',
+      prevText: 'Anterior'
+    });
+  });
+
+  /* DEFINIR FERIADOS */
+  const feriados = [
+    ["08/06/2023", "Corpus Christi"],
+    ["09/06/2023", "Ponto Facultativo"],
+    ["19/06/2023", "Aniversário RP"],
+    ["07/09/2023", "Independência do Brasil"],
+    ["08/09/2023", "Ponto Facultativo"],
+    ["12/10/2023", "N. Senhora Aparecida"],
+    ["13/10/2023", "Ponto Facultativo"],
+    ["02/11/2023", "Finados"],
+    ["03/11/2023", "Ponto Facultativo"],
+    ["15/11/2023", "Procl. da República"],
+    ["20/11/2023", "Consciência Negra"],
+    ["25/12/2023", "Natal"],
+    ["01/01/2024", "Ano Novo"]
+  ];
+
+  /* Dia da Semana */
+  function diaSemana(data){
+    var partesData = data.split('/');
+    var dia = parseInt(partesData[0]);
+    var mes = parseInt(partesData[1]) - 1;
+    var ano = parseInt(partesData[2]);
+    var dataObj = new Date(ano, mes, dia);
+    var dia_da_semana = dataObj.getDay();
+    const weekday = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+    return weekday[dia_da_semana];
+  }
+
+  /* Inicializar Datas */
+  function inicializarDatas(){
+    var now = new Date();
+    var today = ('0' + now.getDate()).slice(-2) + '/' + ('0' + (now.getMonth() + 1)).slice(-2) + '/' + now.getFullYear();
+    $(".data_inicial").val(today);
+    $(".data_final").val(today);
+    $(".data_calcular").val(today);
+    calcularDatas();
+    calcularDataDias();
+  }
+
+  /* Calcular datas */
+  function calcularDatas(){
+    var data_inicial = $(".data_inicial").val();
+    var data_final = $(".data_final").val();
+    $(".diferenca").val(calcularDiferencaDatas(data_inicial, data_final));
+    var data30dias = incrementarData(data_inicial, 30);
+    $(".diferenca_30d").val(data30dias + " (" + diaSemana(data30dias) + ")");
+    var data60dias = incrementarData(data_inicial, 60);
+    $(".diferenca_60d").val(data60dias + " (" + diaSemana(data60dias) + ")");
+  }
+
+  /* Calcular data dias */
+  function calcularDataDias(){
+    var data_calc = $(".data_calcular").val();
+    var dias_calc = $(".dias_calcular").val();
+    $(".diferenca_calcular").css("background-color", "#f0f0f0");
+
+    if(dias_calc == ""){
+      $(".sugerido_calcular").val("");
+      $(".diferenca_calcular").val("");
+    }else if($.isNumeric(dias_calc)===false || dias_calc < 0){
+      dias_calc = 0;
+      $(".diferenca_calcular").val("");
+      $(".dias_calcular").val("");
+    }else if(dias_calc==0){
+      $(".sugerido_calcular").val(data_calc + " (" + diaSemana(data_calc) + ")");
+      $(".diferenca_calcular").val(data_calc + " (" + diaSemana(data_calc) + ")");
+    }else{
+      var dataCorrigida = incrementarData(data_calc, parseInt(dias_calc));
+      $(".sugerido_calcular").val(dataCorrigida + " (" + diaSemana(dataCorrigida) + ")");
+      var dataCalculada = incrementarData(data_calc, parseInt(dias_calc), false);
+      $(".diferenca_calcular").val(dataCalculada + " (" + diaSemana(dataCalculada) + ")");
+      if(isFeriado(dataCalculada)){
+        $(".diferenca_calcular").css("background-color", "yellow");
+        $(".diferenca_calcular").val($(".diferenca_calcular").val() + " - Feriado");
+      }
+    }
+  }
+
+  /* Calcular diferença de datas */
+  function calcularDiferencaDatas(data1, data2) {
+    var partesData1 = data1.split('/');
+    var dia1 = parseInt(partesData1[0]);
+    var mes1 = parseInt(partesData1[1]) - 1;
+    var ano1 = parseInt(partesData1[2]);
+    var partesData2 = data2.split('/');
+    var dia2 = parseInt(partesData2[0]);
+    var mes2 = parseInt(partesData2[1]) - 1;
+    var ano2 = parseInt(partesData2[2]);
+    var dataObj1 = new Date(ano1, mes1, dia1);
+    var dataObj2 = new Date(ano2, mes2, dia2);
+    var diffTime = dataObj2 - dataObj1;
+    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
+
+  /* Verifica Data Útil */
+  function verificarDataUtil(dataObj) {
+    var diaSemana = dataObj.getDay();
+    var dataFormatada = ('0' + dataObj.getDate()).slice(-2) + '/' + ('0' + (dataObj.getMonth() + 1)).slice(-2) + '/' + dataObj.getFullYear();
+    if (diaSemana === 0 || diaSemana === 6 || isFeriado(dataFormatada)) {
+      dataObj.setDate(dataObj.getDate() - 1);
+      return verificarDataUtil(dataObj);
+    }
+    return dataFormatada;
+  }
+
+  /* Verifica Feriado */
+  function isFeriado(data) {
+    for (var i = 0; i < feriados.length; i++) {
+      if (feriados[i][0] === data) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* Incrementar data */
+  function incrementarData(data, numeroDias, corrigirData=true) {
+    var partesData = data.split('/');
+    var dia = parseInt(partesData[0]);
+    var mes = parseInt(partesData[1]) - 1;
+    var ano = parseInt(partesData[2]);
+    var dataObj = new Date(ano, mes, dia);
+    dataObj.setDate(dataObj.getDate() + numeroDias);
+    var novaData;
+    if(corrigirData){novaData = verificarDataUtil(dataObj);}
+    else{novaData = date2string(dataObj);}
+    return novaData;
+  }
+
+
+  /* Calculo Gotas */
+  function calcular_gotas(elemento){
+    var gotas_dia = $(elemento).find(".gotas_dia").val();
+    var fabricante = $(elemento).find(".fabricante").val();
+    if($.isNumeric(gotas_dia)){
+      $(elemento).find(".30d").val(30*gotas_dia/fabricante);
+      $(elemento).find(".60d").val(60*gotas_dia/fabricante);
+      $(elemento).find(".um_frasco").val(Math.ceil(fabricante/gotas_dia) + " dias");
+    }else{
+      $(elemento).find(".30d").val("");
+      $(elemento).find(".60d").val("");
+      $(elemento).find(".um_frasco").val("");
+    }
+  }
+
+  /* Date to String */
+  function date2string(dataObj){
+    var dataFormatada = ('0' + dataObj.getDate()).slice(-2) + '/' + ('0' + (dataObj.getMonth() + 1)).slice(-2) + '/' + dataObj.getFullYear();
+    return dataFormatada;
+  }
+
+  /* Copiar input text */
+  function copy_hidden_input(elem){
+    var e = $(elem).siblings("input");
+    e.get(0).type = "text";
+    e.get(0).select();
+    e.get(0).setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    e.get(0).type = "hidden";
+  }
+
+  $(document).ready(function(){
+    $(".fabricante").change(function(){calcular_gotas(this.closest("form"))});
+    $(".gotas_dia").keyup(function(){calcular_gotas(this.closest("form"))});
+    $(".gotas_dia").change(function(){calcular_gotas(this.closest("form"))});
+    $(".data_inicial").change(function(){calcularDatas()});
+    $(".data_final").change(function(){calcularDatas()});
+    $(".data_calcular").change(function(){calcularDataDias()});
+    $(".dias_calcular").change(function(){calcularDataDias()});
+    $(".dias_calcular").keyup(function(){calcularDataDias()});
+    $(".copy").click(function(){copy_hidden_input(this);});
+    $("button").click( function(e) {$(".collapse").collapse("hide")});
+  });
+</script>
+</html>
