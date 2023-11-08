@@ -5,7 +5,9 @@
 <title>Dispensação</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>.copy{font-size:0.5em; cursor:pointer; padding:5px; color: blue; border:1px solid black; border-radius:5px;} .copy:hover{color:black; border-color:blue; background-color: #ccc;} .copy:active{border:1px solid red; background-color:#fcc;}</style>
+<style>.copy{font-size:0.5em; cursor:pointer; padding:5px; color: blue; border:1px solid black; border-radius:5px;} .copy:hover{color:black; border-color:blue; background-color: #ccc;} .copy:active{border:1px solid red; background-color:#fcc;}
+
+table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {padding: 10px; position: relative;} td:hover::after,th:hover::after {background-color: rgba(255, 255, 0, 0.5); content: '\00a0'; height: 10000px; left: 0; position: absolute; top: -5000px; width: 100%;}</style>
 </head>
 
 <body onload="inicializarDatas();">
@@ -60,7 +62,7 @@
 <hr>
 
 <div>
-<h2>Cálculo de Gotas</h2>
+<h2>Cálculo de Gotas / Aplicações</h2>
   <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxAcidoFolico" aria-expanded="false" aria-controls="boxAcidoFolico">
     Ácido Fólico
   </button>
@@ -69,6 +71,9 @@
   </button>
   <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxClorpromazina" aria-expanded="false" aria-controls="boxClorpromazina">
     Clorpromazina
+  </button>
+  <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxEstriol" aria-expanded="false" aria-controls="boxEstriol">
+    Estriol
   </button>
   <button class="btn btn-primary mb-1" type="button" data-bs-toggle="collapse" data-bs-target="#boxFenobarbital" aria-expanded="false" aria-controls="boxFenobarbital">
     Fenobarbital
@@ -185,6 +190,28 @@
   </form>
 </div>
 
+<div class="container collapse" id="boxEstriol">
+  <h2>Estriol 1mg/g <sup class="copy">458059-0</sup><input type="hidden" value="458059-0"></h2>
+  <form>
+    <div class="row">
+      <div class="col col-12 col-sm-6 col-md-4 mb-3">
+        <label class="form-label">Fabricante</label>
+        <select class="form-select fabricante">
+	  <option value="100" selected>Hipolabor (Estrionil)</option>
+        </select>
+      </div>
+      <div class="col col-12 col-sm-6 col-md-2 mb-3">
+        <label class="form-label">Aplicações/Semana</label>
+        <input type="number" class="form-control aplicacoes_semana">
+      </div>
+      <div class="col col-6 col-sm-12 col-md-4 mb-3">
+        <label class="form-label">1 Bisnaga</label>
+        <input type="text" class="form-control uma_bisnaga" disabled readonly>
+      </div>
+    </div>
+  </form>
+</div>
+
 <div class="container collapse" id="boxFenobarbital">
   <h2>Fenobarbital 40mg/ml <sup class="copy">451055-6</sup><input type="hidden" value="451055-6"></h2>
   <form>
@@ -192,8 +219,8 @@
       <div class="col col-12 col-sm-6 col-md-4 mb-3">
         <label class="form-label">Fabricante</label>
         <select class="form-select fabricante">
-	  <option value="800">Cristália</option>
-          <option value="800" selected>União Química</option>
+	  <option value="800" selected>Cristália</option>
+          <option value="800">União Química</option>
         </select>
       </div>
       <div class="col col-12 col-sm-6 col-md-2 mb-3">
@@ -223,7 +250,8 @@
       <div class="col col-12 col-sm-6 col-md-4 mb-3">
         <label class="form-label">Fabricante</label>
         <select class="form-select fabricante">
-	  <option value="400" selected>União Química</option>
+	  <option value="400" selected>Cristália</option>
+	  <option value="400">União Química</option>
         </select>
       </div>
       <div class="col col-12 col-sm-6 col-md-2 mb-3">
@@ -559,6 +587,19 @@
     }
   }
 
+  /* Calculo Aplicações */
+  function calcular_aplicacoes(elemento){
+    var aplicacoes_semana = $(elemento).find(".aplicacoes_semana").val();
+    var fabricante = $(elemento).find(".fabricante").val();
+    if(aplicacoes_semana==0){
+      $(elemento).find(".uma_bisnaga").val("");
+    }else if($.isNumeric(aplicacoes_semana)){
+      $(elemento).find(".uma_bisnaga").val(Math.floor(fabricante/aplicacoes_semana) + " semanas (" + Math.floor(fabricante/(aplicacoes_semana*4.333)) + " meses)");
+    }else{
+      $(elemento).find(".uma_bisnaga").val("");
+    }
+  }
+
   /* Date to String */
   function date2string(dataObj){
     var dataFormatada = ('0' + dataObj.getDate()).slice(-2) + '/' + ('0' + (dataObj.getMonth() + 1)).slice(-2) + '/' + dataObj.getFullYear();
@@ -579,6 +620,8 @@
     $(".fabricante").change(function(){calcular_gotas(this.closest("form"))});
     $(".gotas_dia").keyup(function(){calcular_gotas(this.closest("form"))});
     $(".gotas_dia").change(function(){calcular_gotas(this.closest("form"))});
+    $(".aplicacoes_semana").keyup(function(){calcular_aplicacoes(this.closest("form"))});
+    $(".aplicacoes_semana").change(function(){calcular_aplicacoes(this.closest("form"))});
     $(".data_inicial").change(function(){calcularDatas()});
     $(".data_final").change(function(){calcularDatas()});
     $(".data_calcular").change(function(){calcularDataDias()});
