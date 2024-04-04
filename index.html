@@ -5,9 +5,13 @@
 <title>Dispensação</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>.copy{font-size:0.5em; cursor:pointer; padding:5px; color: blue; border:1px solid black; border-radius:5px;} .copy:hover{color:black; border-color:blue; background-color: #ccc;} .copy:active{border:1px solid red; background-color:#fcc;}
-
-table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {padding: 10px; position: relative;} td:hover::after,th:hover::after {background-color: rgba(255, 255, 0, 0.5); content: '\00a0'; height: 10000px; left: 0; position: absolute; top: -5000px; width: 100%;}</style>
+<style>.copy{font-size:0.5em; cursor:pointer; padding:5px; color: blue; border:1px solid black; border-radius:5px;}
+.copy:hover{color:black; border-color:blue; background-color: #ccc;}
+.copy:active{border:1px solid red; background-color:#fcc;}
+.vert_highlight {border-spacing: 0; border-collapse: collapse; overflow: hidden;}
+.vert_highlight td, .vert_highlight th {padding: 10px; position: relative;}
+.vert_highlight td:hover::after, .vert_highlight th:hover::after {background-color: rgba(255, 255, 0, 0.5); content: '\00a0'; height: 10000px; left: 0; position: absolute; top: -5000px; width: 100%;}
+</style>
 </head>
 
 <body onload="inicializarDatas();">
@@ -105,8 +109,8 @@ table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {
         <label class="form-label">Fabricante</label>
         <select class="form-select fabricante">
 	  <option value="600">Nesh</option>
-	  <option value="600" selected>Nutrisenior (Folic B9)</option>
-	  <option value="750">NTS (Natubras)</option>
+	  <option value="600">Nutrisenior (Folic B9)</option>
+	  <option value="750" selected>NTS (Natufolic)</option>
 	  <option value="750">Soinvie</option>
         </select>
       </div>
@@ -402,7 +406,7 @@ table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {
 <hr>
 
 <h2>Cartelas com 14 CP</h2>
-<table class="table table-bordered table-striped-columns text-center">
+<table class="table table-bordered table-striped-columns text-center vert_highlight">
 <tbody>
   <tr>
     <th scope="row">Cartela</th>
@@ -441,20 +445,39 @@ table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {
   });
 
   /* DEFINIR FERIADOS */
+/*
+
+26/12/2024 	Quinta-feira
+expediente a partir das 12h 	Ponto Facultativo
+Decreto nº 252, de 2023
+31/12/2024 	Terça-feira
+expediente  até as 14h 	Ponto Facultativo
+Decreto nº 252, de 2023
+*/
   const feriados = [
-    ["08/06/2023", "Corpus Christi"],
-    ["09/06/2023", "Ponto Facultativo"],
-    ["19/06/2023", "Aniversário RP"],
-    ["07/09/2023", "Independência do Brasil"],
-    ["08/09/2023", "Ponto Facultativo"],
-    ["12/10/2023", "N. Senhora Aparecida"],
-    ["13/10/2023", "Ponto Facultativo"],
-    ["02/11/2023", "Finados"],
-    ["03/11/2023", "Ponto Facultativo"],
-    ["15/11/2023", "Procl. da República"],
-    ["20/11/2023", "Consciência Negra"],
     ["25/12/2023", "Natal"],
-    ["01/01/2024", "Ano Novo"]
+    ["26/12/2023", "Ponto Fac. (exp. a partir 12h)"],
+    ["01/01/2024", "Ano Novo"],
+    ["02/01/2024", "Ponto Fac. (exp. a partir 12h)"],
+    ["12/02/2024", "Carnaval"],
+    ["13/02/2024", "Carnaval"],
+    ["14/02/2024", "Ponto Fac. (exp. a partir 12h)"],
+    ["29/03/2024", "Sexta-feira Santa"],
+    ["01/05/2024", "Dia do Trabalho"],
+    ["30/05/2024", "Corpus Christi"],
+    ["31/05/2024", "Ponto Facultativo"],
+    ["19/06/2024", "Aniversário RP"],
+    ["08/07/2024", "Ponto Facultativo"],
+    ["09/07/2024", "Rev. Constitucionalista"],
+    ["28/10/2024", "Dia Func. Público"],
+    ["15/11/2024", "Procl. República"],
+    ["20/11/2024", "Consciência Negra"],
+    ["24/12/2024", "Ponto Fac. (exp. até 14h)"],
+    ["25/12/2024", "Natal"],
+    ["26/12/2024", "Ponto Fac. (exp. a partir 12h)"],
+    ["31/12/2024", "Ponto Fac. (exp. até 14h)"],
+    ["25/12/2024", "Ano Novo"],
+    ["26/12/2024", "Ponto Fac. (exp. a partir 12h)"]
   ];
 
   /* Dia da Semana */
@@ -514,7 +537,7 @@ table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {
       $(".diferenca_calcular").val(dataCalculada + " (" + diaSemana(dataCalculada) + ")");
       if(isFeriado(dataCalculada)){
         $(".diferenca_calcular").css("background-color", "yellow");
-        $(".diferenca_calcular").val($(".diferenca_calcular").val() + " - Feriado");
+        $(".diferenca_calcular").val($(".diferenca_calcular").val() + " - " + qualFeriado(dataCalculada));
       }
     }
   }
@@ -552,6 +575,16 @@ table {border-spacing: 0; border-collapse: collapse; overflow: hidden;} td, th {
     for (var i = 0; i < feriados.length; i++) {
       if (feriados[i][0] === data) {
         return true;
+      }
+    }
+    return false;
+  }
+
+  /* Nome Feriado */
+  function qualFeriado(data) {
+    for (var i = 0; i < feriados.length; i++) {
+      if (feriados[i][0] === data) {
+        return feriados[i][1];
       }
     }
     return false;
