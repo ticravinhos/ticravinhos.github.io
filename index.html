@@ -611,8 +611,8 @@ Decreto nº 252, de 2023
     var gotas_dia = $(elemento).find(".gotas_dia").val();
     var fabricante = $(elemento).find(".fabricante").val();
     if($.isNumeric(gotas_dia)){
-      $(elemento).find(".30d").val(30*gotas_dia/fabricante);
-      $(elemento).find(".60d").val(60*gotas_dia/fabricante);
+      $(elemento).find(".30d").val((30*gotas_dia/fabricante).toFixed(3));
+      $(elemento).find(".60d").val((60*gotas_dia/fabricante).toFixed(3));
       $(elemento).find(".um_frasco").val(Math.ceil(fabricante/gotas_dia) + " dias");
     }else{
       $(elemento).find(".30d").val("");
